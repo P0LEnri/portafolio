@@ -28,7 +28,7 @@ const projectsData: Project[] = [
       'Real-time trade execution'
     ],
 
-    image: '/assets/botTradingview4.gif'
+    image: '/portafolio/assets/botTradingview4.gif'
   },
   {
     id: 'tumor-classifier',
@@ -43,7 +43,7 @@ const projectsData: Project[] = [
       'Hyperparameter optimization',
       'Model validation and testing'
     ],
-    image: '/assets/ml.gif'
+    image: '/portafolio/assets/ml.gif'
   },
   {
     id: 'semantic-search',
@@ -59,7 +59,7 @@ const projectsData: Project[] = [
       'Full-stack implementation'
     ],
    
-    image: '/assets/sgitt.gif'
+    image: '/portafolio/assets/sgitt.gif'
   },
   {
     id: 'pine-script-assistant',
@@ -75,7 +75,7 @@ const projectsData: Project[] = [
       'Token optimization'
     ],
     
-    image: '/assets/rag.gif'
+    image: '/portafolio/assets/rag.gif'
   }
 ];
 
