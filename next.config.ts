@@ -6,6 +6,10 @@ const nextConfig: NextConfig = {
     // Ignora los errores de ESLint al hacer next build
     ignoreDuringBuilds: true,
   },
+  output: 'export',
+  images: {
+    unoptimized: true, // para evitar errores con imágenes en export
+  },
   
 };
 
