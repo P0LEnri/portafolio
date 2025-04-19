@@ -1,10 +1,10 @@
 {
-  "homepage" : "https://P0LEnri.github.io/portafolio",
+  "homepage" : "https://P0LEnri.github.io/portafolio/",
   "name": "kike-profile-page",
   "version": "0.1.0",
   "private": true,
   "scripts": {
-     "predeploy": "npm run build && touch out/.nojekyll",          
+     "predeploy": "npm run build && node -e \"require('fs').writeFileSync('out/.nojekyll', '');\"",         
      "deploy": "gh-pages -d out -t true", 
     "dev": "next dev --turbopack",
     "build": "next build",
