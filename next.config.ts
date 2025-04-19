@@ -8,10 +8,11 @@ const nextConfig: NextConfig = {
   },
   output: 'export',
   basePath: '/portafolio',
-  assetPrefix: '/portafolio/',
+  assetPrefix: '/portafolio',
   images: {
     unoptimized: true, // para evitar errores con imágenes en export
   },
+  trailingSlash: true,
   
 };
 
