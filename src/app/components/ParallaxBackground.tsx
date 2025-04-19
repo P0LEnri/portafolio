@@ -1,23 +1,38 @@
-// ParallaxBackground.tsx
 import React, { useEffect, useRef } from 'react';
-import { motion, useScroll, useTransform } from 'framer-motion';
+// Se eliminaron las importaciones no utilizadas de framer-motion
 
 const NeuralBackground = () => {
-  const canvasRef = useRef(null);
-  const particles = useRef([]);
-  const connections = useRef([]);
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const particles = useRef<Array<{
+    x: number;
+    y: number;
+    vx: number;
+    vy: number;
+    radius: number;
+  }>>([]);
+  const connections = useRef<Array<{
+    start: { x: number; y: number };
+    end: { x: number; y: number };
+    opacity: number;
+  }>>([]);
   
   useEffect(() => {
     const canvas = canvasRef.current;
+    // Añadimos verificación para evitar el error
+    if (!canvas) return;
+    
     const ctx = canvas.getContext('2d');
-    let animationFrameId;
+    // Añadimos verificación para asegurarnos de que ctx no sea null
+    if (!ctx) return;
+    
+    let animationFrameId: number;
     let width = window.innerWidth;
     let height = window.innerHeight;
 
     const initCanvas = () => {
       canvas.width = width;
       canvas.height = height;
-      particles.current = Array(35).fill().map(() => ({
+      particles.current = Array(35).fill(undefined).map(() => ({
         x: Math.random() * width,
         y: Math.random() * height,
         vx: (Math.random() - 0.5) * 0.2,

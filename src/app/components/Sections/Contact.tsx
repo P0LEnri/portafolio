@@ -5,18 +5,6 @@ const ContactForm = () => {
   const [formState, setFormState] = useState({ name: '', email: '', message: '' });
   const [status, setStatus] = useState({ isSubmitting: false, isSubmitted: false, error: false });
 
-  interface FormState {
-    name: string;
-    email: string;
-    message: string;
-  }
-
-  interface StatusState {
-    isSubmitting: boolean;
-    isSubmitted: boolean;
-    error: boolean;
-  }
-
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>): Promise<void> => {
     e.preventDefault();
     setStatus({ isSubmitting: true, isSubmitted: false, error: false });

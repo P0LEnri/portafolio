@@ -153,9 +153,52 @@ const Projects: React.FC = () => {
   const autoPlayInterval = useRef<NodeJS.Timeout | null>(null);
   const carouselRef = useRef<HTMLDivElement>(null);
 
-  const extendedProjects = [...projectsData, ...projectsData];
+  // Modificar esta línea para tener el último proyecto al inicio y el primero al final
+  // Esto crea el efecto infinito visual
+  const extendedProjects = [
+    projectsData[projectsData.length - 1], 
+    ...projectsData, 
+    projectsData[0]
+  ];
   
+  // Actualizar la lógica de navegación
+  const handlePrevious = () => {
+    if (isAnimating) return;
+    setIsAnimating(true);
+    
+    if (currentIndex === 0) {
+      // Si estamos en el primer índice (que es visualmente el último proyecto real)
+      setCurrentIndex(projectsData.length);
+      // Aplicar un pequeño retraso para que el usuario no vea el salto
+      setTimeout(() => {
+        setIsAnimating(false);
+        setCurrentIndex(projectsData.length - 1);
+      }, 0);
+    } else {
+      setCurrentIndex(currentIndex - 1);
+      setTimeout(() => setIsAnimating(false), 500);
+    }
+  };
 
+  const handleNext = () => {
+    if (isAnimating) return;
+    setIsAnimating(true);
+    
+    if (currentIndex === projectsData.length) {
+      // Si estamos en el último índice (que es visualmente el primer proyecto real)
+      setCurrentIndex(0);
+      // Aplicar un pequeño retraso para que el usuario no vea el salto
+      setTimeout(() => {
+        setIsAnimating(false);
+        setCurrentIndex(1);
+      }, 0);
+    } else {
+      setCurrentIndex(currentIndex + 1);
+      setTimeout(() => setIsAnimating(false), 500);
+    }
+  };
+
+  // El resto del código para autoplay
   const startAutoPlay = () => {
     stopAutoPlay();
     autoPlayInterval.current = setInterval(() => {
@@ -176,31 +219,10 @@ const Projects: React.FC = () => {
     return () => stopAutoPlay();
   }, [isHovered, modalOpen]);
 
-  const handlePrevious = () => {
-    if (isAnimating) return;
-    setIsAnimating(true);
-    setCurrentIndex((prevIndex) => {
-      let newIndex = prevIndex - 1;
-      if (newIndex < 0) {
-        newIndex = projectsData.length - 1;
-      }
-      setTimeout(() => setIsAnimating(false), 500);
-      return newIndex;
-    });
-  };
-
-  const handleNext = () => {
-    if (isAnimating) return;
-    setIsAnimating(true);
-    setCurrentIndex((prevIndex) => {
-      let newIndex = prevIndex + 1;
-      if (newIndex >= projectsData.length) {
-        newIndex = 0;
-      }
-      setTimeout(() => setIsAnimating(false), 500);
-      return newIndex;
-    });
-  };
+  // También necesitamos inicializar el carrusel en el primer proyecto real (índice 1)
+  useEffect(() => {
+    setCurrentIndex(1);
+  }, []);
   return (
     <section className="py-20 relative">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -248,24 +270,24 @@ const Projects: React.FC = () => {
 
             {/* Contenedor con overflow visible para mostrar proyectos laterales */}
             <div className="overflow-visible">
-              <motion.div
-                className="flex"
-                animate={{
-                  x: `calc(-${currentIndex * 100}%)`
-                }}
-                transition={{ duration: 0.5, ease: "easeInOut" }}
-              >
-                {extendedProjects.map((project, index) => (
-                  <div
-                    key={`${project.id}-${index}`}
-                    className="w-full flex-none"
-                    style={{ paddingLeft: '12px', paddingRight: '12px' }}
-                  >
-                    <motion.div
-                      className={`transform transition-all duration-300 ${
-                        index === currentIndex ? 'opacity-100 scale-100' : 'opacity-40 scale-95 blur-sm'
-                      }`}
-                    >
+            <motion.div
+        className="flex"
+        animate={{
+          x: `calc(-${currentIndex * 100}%)`
+        }}
+        transition={{ duration: 0.5, ease: "easeInOut" }}
+      >
+        {extendedProjects.map((project, index) => (
+          <div
+            key={`${project.id}-${index}`}
+            className="w-full flex-none"
+            style={{ paddingLeft: '12px', paddingRight: '12px' }}
+          >
+            <motion.div
+              className={`transform transition-all duration-300 ${
+                index === currentIndex ? 'opacity-100 scale-100' : 'opacity-40 scale-95 blur-sm'
+              }`}
+            >
                       <div 
                         onClick={() => {
                           setSelectedProject(project);
@@ -298,18 +320,20 @@ const Projects: React.FC = () => {
 
             {/* Indicadores de página */}
             <div className="flex justify-center mt-8 gap-2">
-              {projectsData.map((_, index) => (
-                <button
-                  key={index}
-                  onClick={() => setCurrentIndex(index)}
-                  className={`w-2 h-2 rounded-full transition-all duration-300 ${
-                    currentIndex % projectsData.length === index ? 
-                    'bg-white w-6' : 
-                    'bg-white/30 hover:bg-white/50'
-                  }`}
-                />
-              ))}
-            </div>
+        {projectsData.map((_, index) => (
+          <button
+            key={index}
+            onClick={() => setCurrentIndex(index + 1)} // +1 porque ahora los proyectos reales empiezan en índice 1
+            className={`w-2 h-2 rounded-full transition-all duration-300 ${
+              (currentIndex === 0 && index === projectsData.length - 1) || // Caso especial para el primero clonado
+              (currentIndex === projectsData.length + 1 && index === 0) || // Caso especial para el último clonado
+              currentIndex === index + 1 ? 
+              'bg-white w-6' : 
+              'bg-white/30 hover:bg-white/50'
+            }`}
+          />
+        ))}
+      </div>
           </div>
         </div>
       </div>
