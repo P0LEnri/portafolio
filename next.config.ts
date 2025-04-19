@@ -7,6 +7,8 @@ const nextConfig: NextConfig = {
     ignoreDuringBuilds: true,
   },
   output: 'export',
+  basePath: '/portafolio',
+  assetPrefix: '/portafolio/',
   images: {
     unoptimized: true, // para evitar errores con imágenes en export
   },
