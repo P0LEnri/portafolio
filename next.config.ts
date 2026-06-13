@@ -16,11 +16,6 @@ const nextConfig: NextConfig = {
   // Añadir el manejo de rutas estáticas
   distDir: 'out',
   cleanDistDir: true,
-  // Especificar una ruta pública estática 
-  publicRuntimeConfig: {
-    staticFolder: '/portafolio',
-  },
-  
 };
 
 export default nextConfig;

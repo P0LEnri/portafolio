@@ -13,8 +13,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Enrique's Portfolio",
-  description: "A showcase of my work and skills",
+  title: "Enrique Islas — AI Consultant",
+  description:
+    "AI consultant specialized in generative AI: secure Microsoft Copilot adoption, Copilot Studio agents and Azure AI Foundry solutions.",
   icons: {
     icon: "/favicon.ico",
     shortcut: "/favicon.ico",

@@ -7,7 +7,7 @@ import Projects from '@/app/components/Sections/Projects';
 import Experience from '@/app/components/Sections/Experience';
 import Skills from '@/app/components/Sections/Skills';
 import Contact from '@/app/components/Sections/Contact';
-import NeuralBackground from '@/app/components/ParallaxBackground';
+import NeuralBackground from '@/app/components/NeuralBackground';
 
 export default function Home() {
   return (

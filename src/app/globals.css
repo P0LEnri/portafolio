@@ -3,15 +3,15 @@
 @tailwind utilities;
 
 :root {
-  --background: #F5F5F5;
-  --foreground: #1A1A1A;
+  --background: #060B1A;
+  --foreground: #F4F6FB;
+  --accent-indigo: #818CF8;
+  --accent-purple: #A78BFA;
+  --accent-pink: #F0ABFC;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0A2540;
-    --foreground: #FFFFFF;
-  }
+html {
+  scroll-behavior: smooth;
 }
 
 body {
@@ -20,18 +20,53 @@ body {
   font-family: var(--font-geist-sans), Arial, sans-serif;
 }
 
-@layer base {
-  h1, h2, h3, h4, h5, h6 {
-    color: #0A2540;
-  }
+::selection {
+  background: rgba(129, 140, 248, 0.4);
+  color: #ffffff;
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #060B1A;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(129, 140, 248, 0.35);
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(129, 140, 248, 0.6);
 }
 
 @layer components {
   .btn-primary {
     @apply bg-primary-light text-white px-6 py-2 rounded-lg hover:opacity-90 transition-opacity;
   }
-  
+
   .section-container {
     @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+  }
+
+  .text-gradient {
+    @apply bg-gradient-to-r from-indigo-300 via-violet-300 to-fuchsia-300 bg-clip-text text-transparent;
+  }
+
+  .glass-card {
+    @apply bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
 }
