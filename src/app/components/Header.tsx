@@ -1,17 +1,21 @@
 import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
+import { useLanguage } from '@/app/i18n/LanguageProvider';
 
-const navItems = [
-  { name: 'Home', href: '#intro' },
-  { name: 'Experience', href: '#experience' },
-  { name: 'Projects', href: '#projects' },
-  { name: 'Skills', href: '#skills' },
-  { name: 'Contact', href: '#contact' },
-];
+const SECTION_HREFS = ['#intro', '#experience', '#projects', '#skills', '#contact'];
 
 const Header = () => {
+  const { t } = useLanguage();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [activeSection, setActiveSection] = useState('#intro');
+
+  const navItems = [
+    { name: t.nav.home, href: '#intro' },
+    { name: t.nav.experience, href: '#experience' },
+    { name: t.nav.projects, href: '#projects' },
+    { name: t.nav.skills, href: '#skills' },
+    { name: t.nav.contact, href: '#contact' },
+  ];
 
   // Scroll spy: highlight the nav item of the section currently in view
   useEffect(() => {
@@ -24,8 +28,8 @@ const Header = () => {
       { rootMargin: '-40% 0px -55% 0px' }
     );
 
-    navItems.forEach((item) => {
-      const el = document.querySelector(item.href);
+    SECTION_HREFS.forEach((href) => {
+      const el = document.querySelector(href);
       if (el) observer.observe(el);
     });
 

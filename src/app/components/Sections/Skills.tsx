@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { skillCategories, SkillCategory } from '@/app/data/skills';
+import { skillMeta } from '@/app/data/skills';
+import { useLanguage } from '@/app/i18n/LanguageProvider';
+import { SkillCategoryT } from '@/app/i18n/translations';
 
 const categoryIcons: Record<string, React.ReactNode> = {
   genai: (
@@ -20,15 +22,26 @@ const categoryIcons: Record<string, React.ReactNode> = {
   ),
 };
 
-const CategoryCard = ({ category, index }: { category: SkillCategory; index: number }) => {
+const CategoryCard = ({
+  id,
+  hero,
+  category,
+  index,
+}: {
+  id: string;
+  hero?: boolean;
+  category: SkillCategoryT;
+  index: number;
+}) => {
   const [expanded, setExpanded] = useState(0);
-  const activeSkill = category.skills[expanded];
+  const activeIndex = expanded % category.skills.length;
+  const activeSkill = category.skills[activeIndex];
 
   const inner = (
     <div className="relative h-full bg-[#0B1120]/90 backdrop-blur-md rounded-2xl p-6 flex flex-col">
       <div className="flex items-center gap-3 mb-5">
         <span className="flex items-center justify-center w-11 h-11 rounded-xl bg-indigo-500/15 border border-indigo-400/30 text-indigo-300">
-          {categoryIcons[category.id]}
+          {categoryIcons[id]}
         </span>
         <h3 className="text-lg sm:text-xl font-bold text-white">{category.title}</h3>
       </div>
@@ -45,7 +58,7 @@ const CategoryCard = ({ category, index }: { category: SkillCategory; index: num
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.96 }}
             className={`px-3.5 py-1.5 rounded-full text-sm font-medium border transition-colors duration-300 ${
-              i === expanded
+              i === activeIndex
                 ? 'bg-gradient-to-r from-indigo-500/40 to-violet-500/40 border-indigo-400/50 text-white'
                 : 'bg-white/5 border-white/10 text-white/65 hover:border-white/25 hover:text-white'
             }`}
@@ -89,9 +102,9 @@ const CategoryCard = ({ category, index }: { category: SkillCategory; index: num
       viewport={{ once: true, margin: '-60px' }}
       transition={{ duration: 0.5, delay: index * 0.12 }}
       whileHover={{ y: -4 }}
-      className={category.hero ? 'lg:col-span-2' : ''}
+      className={hero ? 'lg:col-span-2' : ''}
     >
-      {category.hero ? (
+      {hero ? (
         // Animated conic-gradient border ring on the hero card
         <div className="relative rounded-2xl p-px overflow-hidden h-full">
           <div
@@ -112,28 +125,38 @@ const CategoryCard = ({ category, index }: { category: SkillCategory; index: num
   );
 };
 
-const Skills = () => (
-  <section className="py-20 relative">
-    <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        className="text-center mb-16"
-      >
-        <h2 className="text-4xl font-bold bg-gradient-to-r from-white via-white to-indigo-200 bg-clip-text text-transparent mb-4">
-          Skills & Expertise
-        </h2>
-        <p className="text-xl text-white/80">From secure Copilot rollouts to production AI agents</p>
-      </motion.div>
+const Skills = () => {
+  const { t } = useLanguage();
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
-        {skillCategories.map((category, index) => (
-          <CategoryCard key={category.id} category={category} index={index} />
-        ))}
+  return (
+    <section className="py-20 relative">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="text-center mb-16"
+        >
+          <h2 className="text-4xl font-bold bg-gradient-to-r from-white via-white to-indigo-200 bg-clip-text text-transparent mb-4">
+            {t.skills.title}
+          </h2>
+          <p className="text-xl text-white/80">{t.skills.subtitle}</p>
+        </motion.div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+          {skillMeta.map((meta, index) => (
+            <CategoryCard
+              key={meta.id}
+              id={meta.id}
+              hero={meta.hero}
+              category={t.skills.categories[meta.id]}
+              index={index}
+            />
+          ))}
+        </div>
       </div>
-    </div>
-  </section>
-);
+    </section>
+  );
+};
 
 export default Skills;

@@ -8,13 +8,17 @@ import Experience from '@/app/components/Sections/Experience';
 import Skills from '@/app/components/Sections/Skills';
 import Contact from '@/app/components/Sections/Contact';
 import NeuralBackground from '@/app/components/NeuralBackground';
+import LanguageToggle from '@/app/components/LanguageToggle';
+import { LanguageProvider } from '@/app/i18n/LanguageProvider';
 
 export default function Home() {
   return (
-    <div className="relative min-h-screen overflow-x-hidden">
-      <NeuralBackground />
-      <div className="relative">
-        <Header />
+    <LanguageProvider>
+      <div className="relative min-h-screen overflow-x-hidden">
+        <NeuralBackground />
+        <div className="relative">
+          <Header />
+          <LanguageToggle />
         <motion.main
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -39,8 +43,9 @@ export default function Home() {
           <section id="contact">
             <Contact />
           </section>
-        </motion.main>
+          </motion.main>
+        </div>
       </div>
-    </div>
+    </LanguageProvider>
   );
 }

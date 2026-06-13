@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { site } from '@/app/data/site';
+import { useLanguage } from '@/app/i18n/LanguageProvider';
 
 const fieldClasses = `peer w-full px-4 pt-5 pb-2 bg-white/5 border border-white/10 rounded-lg
   text-white placeholder-transparent focus:outline-none focus:border-indigo-400
@@ -12,6 +13,7 @@ const labelClasses = `absolute left-4 top-3.5 text-white/50 text-base transition
   peer-[:not(:placeholder-shown)]:top-1 peer-[:not(:placeholder-shown)]:text-xs`;
 
 const ContactForm = () => {
+  const { t } = useLanguage();
   const [formState, setFormState] = useState({ name: '', email: '', message: '' });
   const [status, setStatus] = useState({ isSubmitting: false, isSubmitted: false, error: false });
 
@@ -55,7 +57,7 @@ const ContactForm = () => {
           required
           className={fieldClasses}
         />
-        <label htmlFor="contact-name" className={labelClasses}>Name</label>
+        <label htmlFor="contact-name" className={labelClasses}>{t.contact.name}</label>
       </motion.div>
 
       <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.1 }} className="relative">
@@ -68,7 +70,7 @@ const ContactForm = () => {
           required
           className={fieldClasses}
         />
-        <label htmlFor="contact-email" className={labelClasses}>Email</label>
+        <label htmlFor="contact-email" className={labelClasses}>{t.contact.email}</label>
       </motion.div>
 
       <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.2 }} className="relative">
@@ -81,7 +83,7 @@ const ContactForm = () => {
           rows={4}
           className={fieldClasses}
         />
-        <label htmlFor="contact-message" className={labelClasses}>Message</label>
+        <label htmlFor="contact-message" className={labelClasses}>{t.contact.message}</label>
       </motion.div>
 
       <motion.button
@@ -98,7 +100,7 @@ const ContactForm = () => {
           {status.isSubmitting ? (
             <motion.span key="sending" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="flex items-center justify-center gap-2">
               <span className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-              Sending...
+              {t.contact.sending}
             </motion.span>
           ) : status.isSubmitted ? (
             <motion.span key="sent" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="flex items-center justify-center gap-2">
@@ -112,21 +114,21 @@ const ContactForm = () => {
                   transition={{ duration: 0.5, ease: 'easeOut' }}
                 />
               </svg>
-              Sent!
+              {t.contact.sent}
             </motion.span>
           ) : status.error ? (
             <motion.span key="error" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="flex items-center justify-center gap-2">
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
               </svg>
-              Error. Try again.
+              {t.contact.error}
             </motion.span>
           ) : (
             <motion.span key="idle" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="flex items-center justify-center gap-2">
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
               </svg>
-              Send Message
+              {t.contact.send}
             </motion.span>
           )}
         </AnimatePresence>
@@ -157,6 +159,8 @@ const socialLinks = [
 ];
 
 const Contact = () => {
+  const { t } = useLanguage();
+
   return (
     <section className="py-20 relative">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -167,9 +171,9 @@ const Contact = () => {
           className="text-center mb-12"
         >
           <h2 className="text-4xl font-bold bg-gradient-to-r from-white via-white to-indigo-200 bg-clip-text text-transparent mb-4">
-            Contact Me
+            {t.contact.title}
           </h2>
-          <p className="text-xl text-white/80">Have a project in mind? Let&apos;s talk!</p>
+          <p className="text-xl text-white/80">{t.contact.subtitle}</p>
         </motion.div>
 
         <div className="grid grid-cols-1 md:grid-cols-[2fr,1fr] gap-8">
@@ -184,7 +188,7 @@ const Contact = () => {
               viewport={{ once: true }}
               className="glass-card p-8"
             >
-              <h3 className="text-xl font-bold text-white mb-6">Social Media</h3>
+              <h3 className="text-xl font-bold text-white mb-6">{t.contact.social}</h3>
               <div className="space-y-4">
                 {socialLinks.map((link) => (
                   <motion.a
@@ -209,9 +213,9 @@ const Contact = () => {
               transition={{ delay: 0.1 }}
               className="glass-card p-8"
             >
-              <h3 className="text-xl font-bold text-white mb-4">Location</h3>
-              <p className="text-white/80">{site.location}</p>
-              <p className="text-white/50 text-sm mt-1">Remote-friendly</p>
+              <h3 className="text-xl font-bold text-white mb-4">{t.contact.location}</h3>
+              <p className="text-white/80">{t.contact.locationValue}</p>
+              <p className="text-white/50 text-sm mt-1">{t.contact.remote}</p>
             </motion.div>
           </div>
         </div>

@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
-import { projects, Project } from '@/app/data/projects';
+import { projects, ProjectMeta } from '@/app/data/projects';
+import { useLanguage } from '@/app/i18n/LanguageProvider';
 
 const wrap = (index: number, length: number) => ((index % length) + length) % length;
 
@@ -30,41 +31,49 @@ const slideTransition = {
   scale: { duration: 0.3 },
 };
 
-const ProjectCard = ({ project, onOpen }: { project: Project; onOpen: () => void }) => (
-  <div
-    onClick={onOpen}
-    className="glass-card overflow-hidden cursor-pointer group h-full
-      hover:border-indigo-400/40 transition-colors duration-300"
-  >
-    <div className="p-3 pb-0">
-      <project.Preview />
-    </div>
-    <div className="p-5 sm:p-6">
-      <div className="flex items-center justify-between gap-2">
-        <span className="px-3 py-1 text-xs sm:text-sm bg-indigo-500/20 border border-indigo-500/30 rounded-full text-indigo-200">
-          {project.category}
-        </span>
-        <span className="text-xs sm:text-sm text-white/40 group-hover:text-indigo-300 transition-colors flex items-center gap-1">
-          View details
-          <svg className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
-          </svg>
-        </span>
-      </div>
-      <h3 className="text-lg sm:text-xl font-bold text-white mt-3">{project.title}</h3>
-      <p className="text-sm sm:text-base text-white/70 mt-2 line-clamp-2">{project.description}</p>
-      <div className="flex flex-wrap gap-1.5 mt-3">
-        {project.technologies.map((tech) => (
-          <span key={tech} className="px-2 py-0.5 text-xs bg-white/5 border border-white/10 rounded-full text-white/60">
-            {tech}
-          </span>
-        ))}
-      </div>
-    </div>
-  </div>
-);
+const ProjectCard = ({ project, onOpen }: { project: ProjectMeta; onOpen: () => void }) => {
+  const { t } = useLanguage();
+  const content = t.projects.items[project.id];
 
-const ProjectModal = ({ project, onClose }: { project: Project; onClose: () => void }) => {
+  return (
+    <div
+      onClick={onOpen}
+      className="glass-card overflow-hidden cursor-pointer group h-full
+        hover:border-indigo-400/40 transition-colors duration-300"
+    >
+      <div className="p-3 pb-0">
+        <project.Preview />
+      </div>
+      <div className="p-5 sm:p-6">
+        <div className="flex items-center justify-between gap-2">
+          <span className="px-3 py-1 text-xs sm:text-sm bg-indigo-500/20 border border-indigo-500/30 rounded-full text-indigo-200">
+            {content.category}
+          </span>
+          <span className="text-xs sm:text-sm text-white/40 group-hover:text-indigo-300 transition-colors flex items-center gap-1">
+            {t.projects.viewDetails}
+            <svg className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+            </svg>
+          </span>
+        </div>
+        <h3 className="text-lg sm:text-xl font-bold text-white mt-3">{content.title}</h3>
+        <p className="text-sm sm:text-base text-white/70 mt-2 line-clamp-2">{content.description}</p>
+        <div className="flex flex-wrap gap-1.5 mt-3">
+          {project.technologies.map((tech) => (
+            <span key={tech} className="px-2 py-0.5 text-xs bg-white/5 border border-white/10 rounded-full text-white/60">
+              {tech}
+            </span>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const ProjectModal = ({ project, onClose }: { project: ProjectMeta; onClose: () => void }) => {
+  const { t } = useLanguage();
+  const content = t.projects.items[project.id];
+
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => e.key === 'Escape' && onClose();
     window.addEventListener('keydown', onKey);
@@ -99,7 +108,7 @@ const ProjectModal = ({ project, onClose }: { project: Project; onClose: () => v
 
         <project.Preview />
 
-        <h3 className="text-xl sm:text-2xl font-bold text-white mt-6 mb-2">{project.title}</h3>
+        <h3 className="text-xl sm:text-2xl font-bold text-white mt-6 mb-2">{content.title}</h3>
 
         <div className="flex flex-wrap gap-2 mb-4">
           {project.technologies.map((tech) => (
@@ -109,11 +118,11 @@ const ProjectModal = ({ project, onClose }: { project: Project; onClose: () => v
           ))}
         </div>
 
-        <p className="text-white/80 mb-6">{project.longDescription}</p>
+        <p className="text-white/80 mb-6">{content.longDescription}</p>
 
-        <h4 className="text-lg font-semibold text-white mb-2">Key Features</h4>
+        <h4 className="text-lg font-semibold text-white mb-2">{t.projects.keyFeatures}</h4>
         <ul className="space-y-2">
-          {project.keyFeatures.map((feature) => (
+          {content.keyFeatures.map((feature) => (
             <li key={feature} className="flex items-start gap-2 text-white/80">
               <svg className="w-4 h-4 mt-1 text-indigo-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
@@ -128,8 +137,9 @@ const ProjectModal = ({ project, onClose }: { project: Project; onClose: () => v
 };
 
 const Projects = () => {
+  const { t } = useLanguage();
   const [[page, direction], setPage] = useState([0, 0]);
-  const [modalProject, setModalProject] = useState<Project | null>(null);
+  const [modalProject, setModalProject] = useState<ProjectMeta | null>(null);
   const [isHovered, setIsHovered] = useState(false);
   const { ref: sectionRef, inView } = useInView({ threshold: 0.2 });
 
@@ -156,9 +166,9 @@ const Projects = () => {
           className="text-center mb-12"
         >
           <h2 className="text-4xl font-bold bg-gradient-to-r from-white via-white to-indigo-200 bg-clip-text text-transparent mb-4">
-            Featured Projects
+            {t.projects.title}
           </h2>
-          <p className="text-xl text-white/80">Innovative solutions in AI and automation</p>
+          <p className="text-xl text-white/80">{t.projects.subtitle}</p>
         </motion.div>
 
         <div
@@ -170,14 +180,14 @@ const Projects = () => {
           <div className="hidden lg:block absolute -left-24 top-1/2 -translate-y-1/2 w-48 h-[70%] pointer-events-none">
             <div className="glass-card w-full h-full opacity-30 blur-[2px] scale-90 flex items-end p-4">
               <p className="text-sm text-white/60 font-medium line-clamp-2">
-                {projects[wrap(page - 1, projects.length)].title}
+                {t.projects.items[projects[wrap(page - 1, projects.length)].id].title}
               </p>
             </div>
           </div>
           <div className="hidden lg:block absolute -right-24 top-1/2 -translate-y-1/2 w-48 h-[70%] pointer-events-none">
             <div className="glass-card w-full h-full opacity-30 blur-[2px] scale-90 flex items-end p-4">
               <p className="text-sm text-white/60 font-medium line-clamp-2">
-                {projects[wrap(page + 1, projects.length)].title}
+                {t.projects.items[projects[wrap(page + 1, projects.length)].id].title}
               </p>
             </div>
           </div>

@@ -10,6 +10,7 @@ import {
 } from 'framer-motion';
 import { site } from '@/app/data/site';
 import { asset } from '@/app/lib/paths';
+import { useLanguage } from '@/app/i18n/LanguageProvider';
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -22,28 +23,34 @@ const itemVariants = {
 };
 
 const RoleRotator = () => {
+  const { t } = useLanguage();
+  const rotations = t.hero.roleRotations;
   const [index, setIndex] = useState(0);
 
   useEffect(() => {
-    const id = setInterval(() => setIndex((i) => (i + 1) % site.roleRotations.length), 3000);
+    const id = setInterval(() => setIndex((i) => (i + 1) % rotations.length), 3000);
     return () => clearInterval(id);
-  }, []);
+  }, [rotations.length]);
+
+  // Reset to the first rotation when the language changes so we never index
+  // stale content during the swap.
+  const safeIndex = index % rotations.length;
 
   return (
     <h2 className="text-2xl md:text-4xl lg:text-[2.6rem] font-bold leading-tight">
-      <span className="text-white">{site.rolePrefix}</span>
+      <span className="text-white">{t.hero.rolePrefix}</span>
       <span className="text-white/40 mx-3">·</span>
       <span className="inline-grid text-left align-bottom">
         <AnimatePresence mode="wait">
           <motion.span
-            key={index}
+            key={`${t.hero.rolePrefix}-${safeIndex}`}
             initial={{ opacity: 0, y: 16, filter: 'blur(8px)' }}
             animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
             exit={{ opacity: 0, y: -16, filter: 'blur(8px)' }}
             transition={{ type: 'spring', stiffness: 250, damping: 24 }}
             className="col-start-1 row-start-1 bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-violet-400 whitespace-nowrap"
           >
-            {site.roleRotations[index]}
+            {rotations[safeIndex]}
           </motion.span>
         </AnimatePresence>
       </span>
@@ -52,6 +59,7 @@ const RoleRotator = () => {
 };
 
 const Intro = () => {
+  const { t } = useLanguage();
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
   const springX = useSpring(mouseX, { stiffness: 60, damping: 20 });
@@ -115,16 +123,18 @@ const Intro = () => {
         <motion.div variants={itemVariants} className="space-y-6 mb-12">
           <RoleRotator />
           <p className="text-lg md:text-xl text-white/80 leading-relaxed font-light max-w-3xl mx-auto">
-            I help companies{' '}
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-violet-400 font-medium">
-              adopt generative AI with confidence
-            </span>{' '}
-            — from securing and rolling out Microsoft Copilot to designing custom agents with Copilot
-            Studio and Azure AI Foundry. RAG-grounded assistants, API-connected agents, and the{' '}
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-violet-400 font-medium">
-              governance and training to make them stick
-            </span>
-            .
+            {t.hero.description.map((seg, i) =>
+              seg.highlight ? (
+                <span
+                  key={i}
+                  className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-violet-400 font-medium"
+                >
+                  {seg.text}
+                </span>
+              ) : (
+                <React.Fragment key={i}>{seg.text}</React.Fragment>
+              )
+            )}
           </p>
         </motion.div>
 
@@ -144,7 +154,7 @@ const Intro = () => {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"
                 d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
             </svg>
-            Download CV
+            {t.hero.downloadCV}
           </motion.a>
           <motion.a
             href="#contact"
@@ -158,7 +168,7 @@ const Intro = () => {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"
                 d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
             </svg>
-            Let&apos;s talk about your ideas
+            {t.hero.talk}
           </motion.a>
         </motion.div>
 
@@ -172,7 +182,7 @@ const Intro = () => {
         style={{ opacity: scrollCueOpacity }}
         className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-white/40"
       >
-        <span className="text-xs uppercase tracking-[0.2em]">Scroll</span>
+        <span className="text-xs uppercase tracking-[0.2em]">{t.hero.scroll}</span>
         <motion.svg
           className="w-5 h-5"
           fill="none"

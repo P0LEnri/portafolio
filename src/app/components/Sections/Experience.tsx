@@ -1,8 +1,22 @@
 import React, { useRef } from 'react';
 import { motion, useScroll, useSpring } from 'framer-motion';
-import { experiences, ExperienceEntry } from '@/app/data/experience';
+import { experienceMeta } from '@/app/data/experience';
+import { useLanguage } from '@/app/i18n/LanguageProvider';
+import { ExperienceEntryT } from '@/app/i18n/translations';
 
-const ExperienceCard = ({ experience, index }: { experience: ExperienceEntry; index: number }) => {
+const ExperienceCard = ({
+  entry,
+  icon,
+  current,
+  currentLabel,
+  index,
+}: {
+  entry: ExperienceEntryT;
+  icon: React.ReactNode;
+  current?: boolean;
+  currentLabel: string;
+  index: number;
+}) => {
   const isLeft = index % 2 === 0;
 
   return (
@@ -18,7 +32,7 @@ const ExperienceCard = ({ experience, index }: { experience: ExperienceEntry; in
           bg-[#0B1120] border border-indigo-400/40 text-indigo-300
           shadow-[0_0_18px_rgba(129,140,248,0.35)]"
       >
-        {experience.icon}
+        {icon}
       </motion.div>
 
       <div className={`md:grid md:grid-cols-2 md:gap-16 ${isLeft ? '' : ''}`}>
@@ -35,30 +49,30 @@ const ExperienceCard = ({ experience, index }: { experience: ExperienceEntry; in
           <div className="flex items-start justify-between gap-3 mb-4">
             <div>
               <h3 className="text-lg sm:text-xl font-bold text-white group-hover:text-indigo-200 transition-colors duration-300">
-                {experience.title}
+                {entry.title}
               </h3>
-              <p className="text-white/70">{experience.company}</p>
+              <p className="text-white/70">{entry.company}</p>
             </div>
             <div className="flex flex-col items-end gap-1.5 shrink-0">
               <span className="px-3 py-1 text-xs sm:text-sm font-semibold bg-indigo-500/20 border border-indigo-500/30 text-white rounded-full whitespace-nowrap">
-                {experience.year}
+                {entry.period}
               </span>
-              {experience.current && (
+              {current && (
                 <span className="flex items-center gap-1.5 px-2 py-0.5 text-[10px] sm:text-xs font-semibold uppercase tracking-wide bg-emerald-400/10 border border-emerald-400/30 text-emerald-300 rounded-full">
                   <span className="relative flex w-1.5 h-1.5">
                     <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
                     <span className="relative inline-flex rounded-full w-1.5 h-1.5 bg-emerald-400" />
                   </span>
-                  Current
+                  {currentLabel}
                 </span>
               )}
             </div>
           </div>
 
-          <p className="text-white/85 mb-4">{experience.description}</p>
+          <p className="text-white/85 mb-4">{entry.description}</p>
 
           <ul className="space-y-2">
-            {experience.achievements.map((achievement, i) => (
+            {entry.achievements.map((achievement, i) => (
               <motion.li
                 key={i}
                 initial={{ opacity: 0, x: -8 }}
@@ -82,6 +96,7 @@ const ExperienceCard = ({ experience, index }: { experience: ExperienceEntry; in
 };
 
 const Experience = () => {
+  const { t } = useLanguage();
   const timelineRef = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({
     target: timelineRef,
@@ -99,9 +114,9 @@ const Experience = () => {
           className="text-center mb-16"
         >
           <h2 className="text-4xl font-bold bg-gradient-to-r from-white via-white to-indigo-200 bg-clip-text text-transparent mb-4">
-            My Journey
+            {t.experience.title}
           </h2>
-          <p className="text-xl text-white/80">Exploring the frontiers of technology and innovation</p>
+          <p className="text-xl text-white/80">{t.experience.subtitle}</p>
         </motion.div>
 
         <div ref={timelineRef} className="relative">
@@ -116,8 +131,15 @@ const Experience = () => {
           />
 
           <div className="space-y-14">
-            {experiences.map((experience, index) => (
-              <ExperienceCard key={experience.year + experience.title} experience={experience} index={index} />
+            {t.experience.entries.map((entry, index) => (
+              <ExperienceCard
+                key={index}
+                entry={entry}
+                icon={experienceMeta[index]?.icon}
+                current={experienceMeta[index]?.current}
+                currentLabel={t.experience.current}
+                index={index}
+              />
             ))}
           </div>
         </div>
